@@ -22,6 +22,29 @@ export const metadata: Metadata = {
   description: "Vasia-POS",
 };
 
+// This function generates an inline script to prevent theme flashing
+function ThemeScript() {
+  return {
+    __html: `
+      (function() {
+        try {
+          const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const storedTheme = localStorage.getItem('theme');
+          if (storedTheme === 'dark' || (storedTheme === 'system' && systemPrefersDark) || (!storedTheme && systemPrefersDark)) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.style.colorScheme = 'dark';
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.style.colorScheme = 'light';
+          }
+        } catch (e) {
+          console.error('Failed to set theme:', e);
+        }
+      })();
+    `,
+  };
+}
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -31,7 +54,10 @@ export default async function RootLayout({
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={ThemeScript()} />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
