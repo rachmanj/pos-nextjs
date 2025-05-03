@@ -21,17 +21,19 @@ enum UserRole {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String      @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?     @unique
   emailVerified DateTime?
   password      String?
   image         String?
-  role          UserRole  @default(SHOPKEEPER)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  role          UserRole    @default(SHOPKEEPER)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
   accounts      Account[]
   sessions      Session[]
+  inventories   Inventory[]
+  categories    Category[]
 }
 
 model Account {
@@ -67,4 +69,32 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Inventory {
+  id          String    @id @default(cuid())
+  itemCode    String    @unique
+  barcode     String?
+  itemDesc    String
+  salePrice   Decimal   @db.Decimal(10, 2)
+  costPrice   Decimal   @db.Decimal(10, 2)
+  stock       Int       @default(0)
+  supplier    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  creator     User?     @relation(fields: [createdById], references: [id])
+  createdById String?
+  category    Category? @relation(fields: [categoryId], references: [id])
+  categoryId  String?
+}
+
+model Category {
+  id          String      @id @default(cuid())
+  name        String      @unique
+  description String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  inventory   Inventory[]
+  creator     User?       @relation(fields: [createdById], references: [id])
+  createdById String?
 }

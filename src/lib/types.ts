@@ -39,3 +39,38 @@ export interface SignUpFormValues {
   password: string;
   confirmPassword: string;
 }
+
+export type Category = {
+  id: string;
+  name: string;
+  description?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  createdById?: string | null;
+  creator?: {
+    id: string;
+    name?: string | null;
+    email?: string | null;
+  } | null;
+};
+
+export type Inventory = {
+  id: string;
+  itemCode: string;
+  barcode?: string | null;
+  itemDesc: string;
+  salePrice: number;
+  costPrice: number;
+  stock: number;
+  categoryId?: string | null;
+  category?: Category | null;
+  supplier?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  createdById?: string | null;
+  creator?: {
+    id: string;
+    name?: string | null;
+    email?: string | null;
+  } | null;
+};

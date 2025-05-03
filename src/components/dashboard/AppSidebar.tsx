@@ -12,6 +12,7 @@ import {
   Store,
   Users,
   LogOut,
+  Settings,
 } from "lucide-react";
 
 import {
@@ -76,6 +77,12 @@ const AppSidebar = ({ user }: DashboardNavProps) => {
       show: true,
     },
     {
+      title: "Persediaan",
+      href: "/dashboard/inventory",
+      icon: Package,
+      show: true,
+    },
+    {
       title: "Penjualan",
       href: "/dashboard/penjualan",
       icon: Store,
@@ -88,10 +95,10 @@ const AppSidebar = ({ user }: DashboardNavProps) => {
       show: role === UserRole.OWNER || role === UserRole.WAREHOUSE,
     },
     {
-      title: "Persediaan",
-      href: "/dashboard/persediaan",
-      icon: Package,
-      show: true,
+      title: "Settings",
+      href: "/dashboard/settings",
+      icon: Settings,
+      show: role === UserRole.OWNER,
     },
     {
       title: "Users",

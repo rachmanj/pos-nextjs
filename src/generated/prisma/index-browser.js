@@ -160,6 +160,30 @@ exports.Prisma.VerificationTokenScalarFieldEnum = {
   expires: 'expires'
 };
 
+exports.Prisma.InventoryScalarFieldEnum = {
+  id: 'id',
+  itemCode: 'itemCode',
+  barcode: 'barcode',
+  itemDesc: 'itemDesc',
+  salePrice: 'salePrice',
+  costPrice: 'costPrice',
+  stock: 'stock',
+  supplier: 'supplier',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdById: 'createdById',
+  categoryId: 'categoryId'
+};
+
+exports.Prisma.CategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdById: 'createdById'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -202,6 +226,23 @@ exports.Prisma.VerificationTokenOrderByRelevanceFieldEnum = {
   identifier: 'identifier',
   token: 'token'
 };
+
+exports.Prisma.InventoryOrderByRelevanceFieldEnum = {
+  id: 'id',
+  itemCode: 'itemCode',
+  barcode: 'barcode',
+  itemDesc: 'itemDesc',
+  supplier: 'supplier',
+  createdById: 'createdById',
+  categoryId: 'categoryId'
+};
+
+exports.Prisma.CategoryOrderByRelevanceFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  createdById: 'createdById'
+};
 exports.UserRole = exports.$Enums.UserRole = {
   OWNER: 'OWNER',
   SHOPKEEPER: 'SHOPKEEPER',
@@ -212,7 +253,9 @@ exports.Prisma.ModelName = {
   User: 'User',
   Account: 'Account',
   Session: 'Session',
-  VerificationToken: 'VerificationToken'
+  VerificationToken: 'VerificationToken',
+  Inventory: 'Inventory',
+  Category: 'Category'
 };
 
 /**
