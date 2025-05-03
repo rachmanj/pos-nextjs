@@ -1,11 +1,11 @@
 /*
   Warnings:
 
-  - You are about to drop the column `category` on the `inventory` table. All the data in the column will be lost.
+  - You are about to drop the column `category` on the `Inventory` table. All the data in the column will be lost.
 
 */
 -- AlterTable
-ALTER TABLE `inventory` DROP COLUMN `category`,
+ALTER TABLE `Inventory` DROP COLUMN `category`,
     ADD COLUMN `categoryId` VARCHAR(191) NULL;
 
 -- CreateTable
