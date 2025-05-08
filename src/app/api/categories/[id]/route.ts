@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 // Get a single category
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -14,7 +14,7 @@ export async function GET(
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const id = params.id;
+    const id = context.params.id;
     const category = await db.category.findUnique({
       where: { id },
       include: {
@@ -47,7 +47,7 @@ export async function GET(
 // Update a category
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -55,7 +55,7 @@ export async function PUT(
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const id = params.id;
+    const id = context.params.id;
     const body = await request.json();
     const { name, description } = body;
 
@@ -114,7 +114,7 @@ export async function PUT(
 // Delete a category
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -122,7 +122,7 @@ export async function DELETE(
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const id = params.id;
+    const id = context.params.id;
 
     // Check if category exists
     const existingCategory = await db.category.findUnique({
