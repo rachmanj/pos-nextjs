@@ -3,9 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 
-// Get a single category
+// GET a specific category by ID
 export async function GET(
-  request: NextRequest,
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -14,9 +14,10 @@ export async function GET(
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const id = params.id;
     const category = await db.category.findUnique({
-      where: { id },
+      where: {
+        id: params.id,
+      },
       include: {
         creator: {
           select: {
@@ -44,9 +45,9 @@ export async function GET(
   }
 }
 
-// Update a category
+// UPDATE a category
 export async function PUT(
-  request: NextRequest,
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -55,13 +56,12 @@ export async function PUT(
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const id = params.id;
-    const body = await request.json();
+    const body = await req.json();
     const { name, description } = body;
 
-    // Check if category exists
+    // Check if the category exists
     const existingCategory = await db.category.findUnique({
-      where: { id },
+      where: { id: params.id },
     });
 
     if (!existingCategory) {
@@ -71,13 +71,13 @@ export async function PUT(
       );
     }
 
-    // Check if the new name already exists (and it's not the current category)
+    // Check if the new name already exists (but not for this category)
     if (name !== existingCategory.name) {
-      const duplicateCategory = await db.category.findUnique({
+      const duplicateName = await db.category.findUnique({
         where: { name },
       });
 
-      if (duplicateCategory) {
+      if (duplicateName) {
         return NextResponse.json(
           { message: "Category name already exists" },
           { status: 400 }
@@ -85,8 +85,11 @@ export async function PUT(
       }
     }
 
+    // Update the category
     const updatedCategory = await db.category.update({
-      where: { id },
+      where: {
+        id: params.id,
+      },
       data: {
         name,
         description,
@@ -111,9 +114,9 @@ export async function PUT(
   }
 }
 
-// Delete a category
+// DELETE a category
 export async function DELETE(
-  request: NextRequest,
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -122,11 +125,9 @@ export async function DELETE(
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const id = params.id;
-
-    // Check if category exists
+    // Check if the category exists
     const existingCategory = await db.category.findUnique({
-      where: { id },
+      where: { id: params.id },
     });
 
     if (!existingCategory) {
@@ -136,28 +137,14 @@ export async function DELETE(
       );
     }
 
-    // Check if any inventory items are using this category
-    const inventoryItemsCount = await db.inventory.count({
-      where: { categoryId: id },
-    });
-
-    if (inventoryItemsCount > 0) {
-      return NextResponse.json(
-        {
-          message: `Cannot delete category because it is used by ${inventoryItemsCount} inventory item(s).`,
-        },
-        { status: 400 }
-      );
-    }
-
+    // Delete the category
     await db.category.delete({
-      where: { id },
+      where: {
+        id: params.id,
+      },
     });
 
-    return NextResponse.json(
-      { message: "Category deleted successfully" },
-      { status: 200 }
-    );
+    return NextResponse.json({ message: "Category deleted successfully" });
   } catch (error) {
     console.error("Error deleting category:", error);
     return NextResponse.json(
