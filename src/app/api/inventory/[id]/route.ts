@@ -3,21 +3,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 
-interface Params {
-  params: {
-    id: string;
-  };
-}
-
 // Get a single inventory item
-export async function GET(req: NextRequest, { params }: Params) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const id = await Promise.resolve(params.id);
+    const id = params.id;
     const item = await db.inventory.findUnique({
       where: { id },
       include: {
@@ -56,14 +53,17 @@ export async function GET(req: NextRequest, { params }: Params) {
 }
 
 // Update an inventory item
-export async function PUT(req: NextRequest, { params }: Params) {
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const id = await Promise.resolve(params.id);
+    const id = params.id;
     const body = await req.json();
     const {
       itemCode,
@@ -143,14 +143,17 @@ export async function PUT(req: NextRequest, { params }: Params) {
 }
 
 // Delete an inventory item
-export async function DELETE(req: NextRequest, { params }: Params) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const id = await Promise.resolve(params.id);
+    const id = params.id;
 
     // Check if item exists
     const existingItem = await db.inventory.findUnique({
