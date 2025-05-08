@@ -3,21 +3,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 
-type RouteParams = {
-  params: {
-    id: string;
-  };
-};
-
 // Get a single category
-export async function GET(request: NextRequest, context: RouteParams) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const id = context.params.id;
+    const id = params.id;
     const category = await db.category.findUnique({
       where: { id },
       include: {
@@ -48,14 +45,17 @@ export async function GET(request: NextRequest, context: RouteParams) {
 }
 
 // Update a category
-export async function PUT(request: NextRequest, context: RouteParams) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const id = context.params.id;
+    const id = params.id;
     const body = await request.json();
     const { name, description } = body;
 
@@ -112,14 +112,17 @@ export async function PUT(request: NextRequest, context: RouteParams) {
 }
 
 // Delete a category
-export async function DELETE(request: NextRequest, context: RouteParams) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const id = context.params.id;
+    const id = params.id;
 
     // Check if category exists
     const existingCategory = await db.category.findUnique({
